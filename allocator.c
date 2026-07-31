@@ -135,7 +135,7 @@ static block_t *split_block(block_t *block, size_t requested_size) {
 }
 
 static block_t *coalesce(block_t *block) {
-    if (block->next_phys && block->next_phys->free) {
+    while (block->next_phys && block->next_phys->free) {
         block_t *next = block->next_phys;
         free_list_remove(next);
         block->size += block_payload_offset() + next->size;
@@ -145,7 +145,7 @@ static block_t *coalesce(block_t *block) {
         }
     }
 
-    if (block->prev_phys && block->prev_phys->free) {
+    while (block->prev_phys && block->prev_phys->free) {
         block_t *prev = block->prev_phys;
         free_list_remove(prev);
         prev->size += block_payload_offset() + block->size;
